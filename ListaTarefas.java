@@ -1,8 +1,7 @@
-import java.time.format.DateTimeFormatter;
-
+import java.util.Date;
 public class ListaTarefas {
     private int id;
-    private date dataTarefa;
+    private Date dataTarefa;
     private String descricao;
     private String observacao;
 
@@ -13,10 +12,10 @@ public class ListaTarefas {
     public void setId(int id) {
         this.id = id;
     }
-    public date getDataTarefa() {
+    public Date getDataTarefa() {
         return dataTarefa;
     }
-    public void setDataTarefa(date dataTarefa) {
+    public void setDataTarefa(Date dataTarefa) {
         this.dataTarefa = dataTarefa;
     }
     public String getDescricao() {
@@ -35,7 +34,7 @@ public class ListaTarefas {
     //construtores
     public ListaTarefas() {
     }
-    public ListaTarefas(int id, date dataTarefa, String descricao, String observacao) {
+    public ListaTarefas(int id, Date dataTarefa, String descricao, String observacao) {
         this.id = id;
         this.dataTarefa = dataTarefa;
         this.descricao = descricao;
