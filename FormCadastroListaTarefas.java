@@ -1,23 +1,15 @@
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import javax.swing.*;
 
 public class FormCadastroListaTarefas extends JFrame {
-   //os componentes da interface
-    private JTextField txtId;
-    private JTextField txtDataTarefa;
-    private JTextField txtDescricao;
-    private JTextField txtObservacao;
-    private JButton btnSalvar;
-    private JButton btnAlterar;
-    private JButton btnExcluir;
-    private JButton btnPesquisar;
-    private JButton btnBuscarResponsavel;
-    private JButton btnBuscarPrioridade;
+    private JTextField txtId, txtDataTarefa, txtDescricao, txtObservacao;
+    private JButton btnSalvar, btnAlterar, btnExcluir, btnPesquisar, btnBuscarResponsavel, btnBuscarPrioridade;
 
     public FormCadastroListaTarefas(){
-
         setTitle("Cadastro de Lista de Tarefas");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(400,250);
@@ -91,47 +83,12 @@ public class FormCadastroListaTarefas extends JFrame {
         btnBuscarPrioridade = new JButton("Buscar Prioridade");
 
         //Adicionar listeners aos botões
-        btnSalvar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            salvarTarefa();
-            }
-        });
-
-        btnAlterar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                alterarTarefa();
-            }
-        });
-
-        btnExcluir.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                excluirTarefa();
-            }
-        });
-
-        btnPesquisar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                pesquisarTarefa();
-            }
-        });
-
-        btnBuscarResponsavel.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                buscarResponsavel();
-            }   
-        });
-
-        btnBuscarPrioridade.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                buscarPrioridade();
-            }
-        });
+        btnSalvar.addActionListener(e -> salvarTarefa());
+        btnAlterar.addActionListener(e -> alterarTarefa());
+        btnExcluir.addActionListener(e -> excluirTarefa());
+        btnPesquisar.addActionListener(e -> pesquisarTarefa());
+        btnBuscarResponsavel.addActionListener(e -> buscarResponsavel());
+        btnBuscarPrioridade.addActionListener(e -> buscarPrioridade());
 
         painelBotoes.add(btnSalvar);
         painelBotoes.add(btnAlterar);
@@ -148,4 +105,73 @@ public class FormCadastroListaTarefas extends JFrame {
         painelPrincipal.add(painelBotoes, gbc);
         add(painelPrincipal);
     }
+
+   private void salvarTarefa() {
+    try (Connection conn = conexao.connect()) {
+        String sql = "INSERT INTO lista_tarefas (datatarefa, descricao, observacao) VALUES (?, ?, ?)";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setDate(1, java.sql.Date.valueOf(txtDataTarefa.getText())); // yyyy-MM-dd
+        stmt.setString(2, txtDescricao.getText());
+        stmt.setString(3, txtObservacao.getText());
+        stmt.executeUpdate();
+        JOptionPane.showMessageDialog(this, "Tarefa salva com sucesso.");
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this, "Erro ao salvar: " + ex.getMessage());
+    }
+}
+
+private void alterarTarefa() {
+    try (Connection conn = conexao.connect()) {
+        String sql = "UPDATE lista_tarefas SET datatarefa = ?, descricao = ?, observacao = ? WHERE id = ?";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setDate(1, java.sql.Date.valueOf(txtDataTarefa.getText()));
+        stmt.setString(2, txtDescricao.getText());
+        stmt.setString(3, txtObservacao.getText());
+        stmt.setInt(4, Integer.parseInt(txtId.getText()));
+        stmt.executeUpdate();
+        JOptionPane.showMessageDialog(this, "Tarefa alterada com sucesso.");
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this, "Erro ao alterar: " + ex.getMessage());
+    }
+}
+
+private void excluirTarefa() {
+    try (Connection conn = conexao.connect()) {
+        String sql = "DELETE FROM lista_tarefas WHERE id = ?";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setInt(1, Integer.parseInt(txtId.getText()));
+        stmt.executeUpdate();
+        JOptionPane.showMessageDialog(this, "Tarefa excluída.");
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this, "Erro ao excluir: " + ex.getMessage());
+    }
+}
+
+private void pesquisarTarefa() {
+    try (Connection conn = conexao.connect()) {
+        String sql = "SELECT * FROM lista_tarefas WHERE id = ?";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setInt(1, Integer.parseInt(txtId.getText()));
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            txtDataTarefa.setText(rs.getString("datatarefa"));
+            txtDescricao.setText(rs.getString("descricao"));
+            txtObservacao.setText(rs.getString("observacao"));
+        } else {
+            JOptionPane.showMessageDialog(this, "Tarefa não encontrada.");
+        }
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this, "Erro ao pesquisar: " + ex.getMessage());
+    }
+}
+
+private void buscarResponsavel() {
+    // Pode abrir uma nova tela/lista ou realizar uma busca simples.
+    JOptionPane.showMessageDialog(this, "Buscar Responsável: implementar seleção/lista.");
+}
+
+private void buscarPrioridade() {
+    JOptionPane.showMessageDialog(this, "Buscar Prioridade: implementar seleção/lista.");
+}
+
 }

@@ -50,35 +50,4 @@ public class ListaTarefas {
     //buscarResponsavel: boolean
     //buscarPrioridade: boolean
     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
