@@ -106,8 +106,8 @@ public class FormCadastroListaTarefas extends JFrame {
         add(painelPrincipal);
     }
 
-   private void salvarTarefa() {
-    try (Connection conn = conexao.connect()) {
+private void salvarTarefa() {
+    try (Connection conn = Conexao.connect()) {   // Usa sua classe de conexão
         String sql = "INSERT INTO lista_tarefas (datatarefa, descricao, observacao) VALUES (?, ?, ?)";
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setDate(1, java.sql.Date.valueOf(txtDataTarefa.getText())); // yyyy-MM-dd
@@ -121,7 +121,7 @@ public class FormCadastroListaTarefas extends JFrame {
 }
 
 private void alterarTarefa() {
-    try (Connection conn = conexao.connect()) {
+    try (Connection conn = Conexao.connect()) {
         String sql = "UPDATE lista_tarefas SET datatarefa = ?, descricao = ?, observacao = ? WHERE id = ?";
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setDate(1, java.sql.Date.valueOf(txtDataTarefa.getText()));
@@ -136,7 +136,7 @@ private void alterarTarefa() {
 }
 
 private void excluirTarefa() {
-    try (Connection conn = conexao.connect()) {
+    try (Connection conn = Conexao.connect()) {
         String sql = "DELETE FROM lista_tarefas WHERE id = ?";
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setInt(1, Integer.parseInt(txtId.getText()));
@@ -148,7 +148,7 @@ private void excluirTarefa() {
 }
 
 private void pesquisarTarefa() {
-    try (Connection conn = conexao.connect()) {
+    try (Connection conn = Conexao.connect()) {
         String sql = "SELECT * FROM lista_tarefas WHERE id = ?";
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setInt(1, Integer.parseInt(txtId.getText()));

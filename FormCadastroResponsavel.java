@@ -72,7 +72,7 @@ public class FormCadastroResponsavel extends JFrame {
     }
 
     private void salvarResponsavel() {
-    try (Connection conn = conexao.connect()) {
+    try (Connection conn = Conexao.connect()) {
         String sql = "INSERT INTO responsavel (nome) VALUES (?)";
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setString(1, txtNome.getText());
@@ -84,7 +84,7 @@ public class FormCadastroResponsavel extends JFrame {
 }
 
 private void alterarResponsavel() {
-    try (Connection conn = conexao.connect()) {
+    try (Connection conn = Conexao.connect()) {
         String sql = "UPDATE responsavel SET nome = ? WHERE id = ?";
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setString(1, txtNome.getText());
@@ -97,7 +97,7 @@ private void alterarResponsavel() {
 }
 
 private void excluirResponsavel() {
-    try (Connection conn = conexao.connect()) {
+    try (Connection conn = Conexao.connect()) {
         String sql = "DELETE FROM responsavel WHERE id = ?";
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setInt(1, Integer.parseInt(txtId.getText()));
@@ -109,7 +109,7 @@ private void excluirResponsavel() {
 }
 
 private void pesquisarResponsavel() {
-    try (Connection conn = conexao.connect()) {
+    try (Connection conn = Conexao.connect()) {
         String sql = "SELECT * FROM responsavel WHERE id = ?";
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setInt(1, Integer.parseInt(txtId.getText()));

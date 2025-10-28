@@ -72,7 +72,7 @@ public class FormCadastroPrioridade extends JFrame {
     }
 
     private void salvarPrioridade() {
-    try (Connection conn = conexao.connect()) {
+    try (Connection conn = Conexao.connect()) {
         String sql = "INSERT INTO prioridade (descricao) VALUES (?)";
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setString(1, txtDescricao.getText());
@@ -84,7 +84,7 @@ public class FormCadastroPrioridade extends JFrame {
 }
 
 private void alterarPrioridade() {
-    try (Connection conn = conexao.connect()) {
+    try (Connection conn = Conexao.connect()) {
         String sql = "UPDATE prioridade SET descricao = ? WHERE id = ?";
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setString(1, txtDescricao.getText());
@@ -97,7 +97,7 @@ private void alterarPrioridade() {
 }
 
 private void excluirPrioridade() {
-    try (Connection conn = conexao.connect()) {
+    try (Connection conn = Conexao.connect()) {
         String sql = "DELETE FROM prioridade WHERE id = ?";
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setInt(1, Integer.parseInt(txtId.getText()));
@@ -109,7 +109,7 @@ private void excluirPrioridade() {
 }
 
 private void pesquisarPrioridade() {
-    try (Connection conn = conexao.connect()) {
+    try (Connection conn = Conexao.connect()) {
         String sql = "SELECT * FROM prioridade WHERE id = ?";
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setInt(1, Integer.parseInt(txtId.getText()));
