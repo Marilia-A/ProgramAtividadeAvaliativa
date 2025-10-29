@@ -71,9 +71,10 @@ public class FormCadastroPrioridade extends JFrame {
 
     private void salvarPrioridade() {
     try (Connection conn = Conexao.connect()) {
-        String sql = "INSERT INTO prioridade (descricao) VALUES (?)";
+        String sql = "INSERT INTO prioridade (id, descricao) VALUES (?, ?)";
         PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setString(1, txtDescricao.getText());
+        stmt.setInt(1, Integer.parseInt(txtId.getText()));
+        stmt.setString(2, txtDescricao.getText());
         stmt.executeUpdate();
         JOptionPane.showMessageDialog(this, "Prioridade salva com sucesso.");
     } catch (Exception ex) {
@@ -121,6 +122,8 @@ private void pesquisarPrioridade() {
         JOptionPane.showMessageDialog(this, "Erro ao pesquisar: " + ex.getMessage());
     }
 }
-
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new FormCadastroPrioridade().setVisible(true));
+    }
 }
 

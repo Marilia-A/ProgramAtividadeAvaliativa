@@ -173,13 +173,14 @@ public class FormCadastroListaTarefas extends JFrame {
             int idPrioridade = Integer.parseInt(cmbPrioridade.getSelectedItem().toString().split(" - ")[0]);
             int idResponsavel = Integer.parseInt(cmbResponsavel.getSelectedItem().toString().split(" - ")[0]);
 
-            String sql = "INSERT INTO lista_tarefas (data_tarefa, descricao_tarefa, observacao, id_prioridade, id_responsavel) VALUES (?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO lista_tarefas (id, data_tarefa, descricao_tarefa, observacao, id_prioridade, id_responsavel) VALUES (?, ?, ?, ?, ?, ?)";
             PreparedStatement stmt = con.prepareStatement(sql);
-            stmt.setDate(1, dataSql);
-            stmt.setString(2, descricao);
-            stmt.setString(3, observacao);
-            stmt.setInt(4, idPrioridade);
-            stmt.setInt(5, idResponsavel);
+            stmt.setInt(1, Integer.parseInt(txtId.getText()));
+            stmt.setDate(2, dataSql);
+            stmt.setString(3, descricao);
+            stmt.setString(4, observacao);
+            stmt.setInt(5, idPrioridade);
+            stmt.setInt(6, idResponsavel);
 
             stmt.executeUpdate();
             JOptionPane.showMessageDialog(this, "Tarefa salva com sucesso!");
