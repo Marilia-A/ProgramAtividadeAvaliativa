@@ -1,177 +1,316 @@
 import java.awt.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
+import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.*;
 
+
 public class FormCadastroListaTarefas extends JFrame {
-    private JTextField txtId, txtDataTarefa, txtDescricao, txtObservacao;
-    private JButton btnSalvar, btnAlterar, btnExcluir, btnPesquisar, btnBuscarResponsavel, btnBuscarPrioridade;
+    private JTextField txtId;
+    private JTextField txtDescricao;
+    private JTextField txtObservacao;
+    private JTextField txtDataTarefa;
+    private JComboBox<String> cmbPrioridade;
+    private JComboBox<String> cmbResponsavel;
+    private JButton btnSalvar;
+    private JButton btnPesquisar;
+    private JButton btnAlterar;
+    private JButton btnExcluir; 
+    private JButton btnLimpar;
+    private JButton btnSair;
 
     public FormCadastroListaTarefas(){
         setTitle("Cadastro de Lista de Tarefas");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(400,250);
+        setSize(600,400);
         setLocationRelativeTo(null);
-
-        iniciarComponentes();
         setVisible(true);
-    }
+        setLayout(new GridBagLayout());
 
-    private void iniciarComponentes(){
-        JPanel painelPrincipal = new JPanel(new GridBagLayout());
+     //retirei o iniciar componentes
+
         GridBagConstraints gbc = new GridBagConstraints();
-
-        gbc.insets = new Insets(5,5,5,5);
-        gbc.anchor = GridBagConstraints.WEST;
+        gbc.insets = new Insets(8,8,8,8);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
         //Campo ID
-        gbc.gridx = 0;
+        JLabel lblId = new JLabel("ID:");
+        gbc.gridx = 0; 
         gbc.gridy = 0;
-        painelPrincipal.add(new JLabel("ID:"),gbc);
-        gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0;
-        txtId = new JTextField(15);
-        painelPrincipal.add(txtId,gbc);
+        add(lblId, gbc);
+        txtId = new JTextField();
+        gbc.gridx = 1; 
+        gbc.gridy = 0;
+        add(txtId, gbc);
 
         //Campo DataTarefa
-        gbc.gridx = 0;
+        JLabel lblData = new JLabel("Data (dd/MM/yyyy):");
+        gbc.gridx = 0; 
         gbc.gridy = 1;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.weightx = 0;
-        painelPrincipal.add(new JLabel("Data da Tarefa:"),gbc);
-        gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0;
-        txtDataTarefa = new JTextField(15);
-        painelPrincipal.add(txtDataTarefa,gbc);
+        add(lblData, gbc);
+        txtDataTarefa = new JTextField();
+        gbc.gridx = 1; 
+        gbc.gridy = 1;
+        add(txtDataTarefa, gbc);
 
         //Campo Descricao
-        gbc.gridx = 0;
+        JLabel lblDescricao = new JLabel("Descrição:");
+        gbc.gridx = 0; 
         gbc.gridy = 2;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.weightx = 0;
-        painelPrincipal.add(new JLabel("Descrição:"),gbc);
-        gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0;
-        txtDescricao = new JTextField(15);
-        painelPrincipal.add(txtDescricao,gbc);
+        add(lblDescricao, gbc);
+        txtDescricao = new JTextField();
+        gbc.gridx = 1; 
+        gbc.gridy = 2;
+        add(txtDescricao, gbc);
+
 
         //Campo Observacao
-        gbc.gridx = 0;
+        JLabel lblObservacao = new JLabel("Observação:");
+        gbc.gridx = 0; 
         gbc.gridy = 3;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.weightx = 0;
-        painelPrincipal.add(new JLabel("Observação:"),gbc);
-        gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0;
-        txtObservacao = new JTextField(15);
-        painelPrincipal.add(txtObservacao,gbc);
+        add(lblObservacao, gbc);
+        txtObservacao = new JTextField();
+        gbc.gridx = 1; 
+        gbc.gridy = 3;
+        add(txtObservacao, gbc);
+
+        // --- Combo Prioridade ---
+        JLabel lblPrioridade = new JLabel("Prioridade:");
+        gbc.gridx = 0; 
+        gbc.gridy = 4;
+        add(lblPrioridade, gbc);
+        cmbPrioridade = new JComboBox<>();
+        gbc.gridx = 1; 
+        gbc.gridy = 4;
+        add(cmbPrioridade, gbc);
+
+        // --- Combo Responsável ---
+        JLabel lblResponsavel = new JLabel("Responsável:");
+        gbc.gridx = 0; 
+        gbc.gridy = 5;
+        add(lblResponsavel, gbc);
+        cmbResponsavel = new JComboBox<>();
+        gbc.gridx = 1; 
+        gbc.gridy = 5;
+        add(cmbResponsavel, gbc);
+
 
         //Painel de botões
-        JPanel painelBotoes = new JPanel(new FlowLayout());
-
+        JPanel painelBotoes = new JPanel();
         btnSalvar = new JButton("Salvar");
+        btnPesquisar = new JButton("Pesquisar");
         btnAlterar = new JButton("Alterar");
         btnExcluir = new JButton("Excluir");
-        btnPesquisar = new JButton("Pesquisar");
-        btnBuscarResponsavel = new JButton("Buscar Responsável");
-        btnBuscarPrioridade = new JButton("Buscar Prioridade");
-
-        //Adicionar listeners aos botões
-        btnSalvar.addActionListener(e -> salvarTarefa());
-        btnAlterar.addActionListener(e -> alterarTarefa());
-        btnExcluir.addActionListener(e -> excluirTarefa());
-        btnPesquisar.addActionListener(e -> pesquisarTarefa());
-        btnBuscarResponsavel.addActionListener(e -> buscarResponsavel());
-        btnBuscarPrioridade.addActionListener(e -> buscarPrioridade());
+        btnLimpar = new JButton("Limpar");
+        btnSair = new JButton("Sair");
 
         painelBotoes.add(btnSalvar);
+        painelBotoes.add(btnPesquisar);
         painelBotoes.add(btnAlterar);
         painelBotoes.add(btnExcluir);
-        painelBotoes.add(btnPesquisar);
-        painelBotoes.add(btnBuscarResponsavel);
-        painelBotoes.add(btnBuscarPrioridade);
+        painelBotoes.add(btnLimpar);
+        painelBotoes.add(btnSair);
 
-        // Adicionar painel de botões ao painel principal
-        gbc.gridx = 0;
-        gbc.gridy = 4;
         gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        painelPrincipal.add(painelBotoes, gbc);
-        add(painelPrincipal);
+        gbc.gridx = 0; 
+        gbc.gridy = 6;
+        add(painelBotoes, gbc);
+        carregarComboPrioridades();
+        carregarComboResponsaveis();
+
+        btnSalvar.addActionListener(e -> salvar());
+        btnPesquisar.addActionListener(e -> pesquisar());
+        btnAlterar.addActionListener(e -> alterar());
+        btnExcluir.addActionListener(e -> excluir());
+        btnLimpar.addActionListener(e -> limpar());
+        btnSair.addActionListener(e -> dispose());
     }
 
-private void salvarTarefa() {
-    try (Connection conn = Conexao.connect()) {   // Usa sua classe de conexão
-        String sql = "INSERT INTO lista_tarefas (datatarefa, descricao, observacao) VALUES (?, ?, ?)";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setDate(1, java.sql.Date.valueOf(txtDataTarefa.getText())); // yyyy-MM-dd
-        stmt.setString(2, txtDescricao.getText());
-        stmt.setString(3, txtObservacao.getText());
-        stmt.executeUpdate();
-        JOptionPane.showMessageDialog(this, "Tarefa salva com sucesso.");
-    } catch (Exception ex) {
-        JOptionPane.showMessageDialog(this, "Erro ao salvar: " + ex.getMessage());
-    }
-}
-
-private void alterarTarefa() {
-    try (Connection conn = Conexao.connect()) {
-        String sql = "UPDATE lista_tarefas SET datatarefa = ?, descricao = ?, observacao = ? WHERE id = ?";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setDate(1, java.sql.Date.valueOf(txtDataTarefa.getText()));
-        stmt.setString(2, txtDescricao.getText());
-        stmt.setString(3, txtObservacao.getText());
-        stmt.setInt(4, Integer.parseInt(txtId.getText()));
-        stmt.executeUpdate();
-        JOptionPane.showMessageDialog(this, "Tarefa alterada com sucesso.");
-    } catch (Exception ex) {
-        JOptionPane.showMessageDialog(this, "Erro ao alterar: " + ex.getMessage());
-    }
-}
-
-private void excluirTarefa() {
-    try (Connection conn = Conexao.connect()) {
-        String sql = "DELETE FROM lista_tarefas WHERE id = ?";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setInt(1, Integer.parseInt(txtId.getText()));
-        stmt.executeUpdate();
-        JOptionPane.showMessageDialog(this, "Tarefa excluída.");
-    } catch (Exception ex) {
-        JOptionPane.showMessageDialog(this, "Erro ao excluir: " + ex.getMessage());
-    }
-}
-
-private void pesquisarTarefa() {
-    try (Connection conn = Conexao.connect()) {
-        String sql = "SELECT * FROM lista_tarefas WHERE id = ?";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setInt(1, Integer.parseInt(txtId.getText()));
-        ResultSet rs = stmt.executeQuery();
-        if (rs.next()) {
-            txtDataTarefa.setText(rs.getString("datatarefa"));
-            txtDescricao.setText(rs.getString("descricao"));
-            txtObservacao.setText(rs.getString("observacao"));
-        } else {
-            JOptionPane.showMessageDialog(this, "Tarefa não encontrada.");
+    // --- Carregar Prioridades ---
+    private void carregarComboPrioridades() {
+        try (Connection con = Conexao.connect()) {
+            cmbPrioridade.removeAllItems();
+            String sql = "SELECT id, descricao FROM prioridade ORDER BY id";
+            PreparedStatement stmt = con.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                cmbPrioridade.addItem(rs.getInt("id") + " - " + rs.getString("descricao"));
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Erro ao carregar prioridades: " + e.getMessage());
         }
-    } catch (Exception ex) {
-        JOptionPane.showMessageDialog(this, "Erro ao pesquisar: " + ex.getMessage());
     }
-}
 
-private void buscarResponsavel() {
-    // Pode abrir uma nova tela/lista ou realizar uma busca simples.
-    JOptionPane.showMessageDialog(this, "Buscar Responsável: implementar seleção/lista.");
-}
+    // --- Carregar Responsáveis ---
+    private void carregarComboResponsaveis() {
+        try (Connection con = Conexao.connect()) {
+            cmbResponsavel.removeAllItems();
+            String sql = "SELECT id, nome FROM responsavel ORDER BY id";
+            PreparedStatement stmt = con.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                cmbResponsavel.addItem(rs.getInt("id") + " - " + rs.getString("nome"));
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Erro ao carregar responsáveis: " + e.getMessage());
+        }
+    }
 
-private void buscarPrioridade() {
-    JOptionPane.showMessageDialog(this, "Buscar Prioridade: implementar seleção/lista.");
-}
+        // --- Salvar ---
+    private void salvar() {
+        String dataTexto = txtDataTarefa.getText().trim();
+        String descricao = txtDescricao.getText().trim();
+        String observacao = txtObservacao.getText().trim();
 
+        if (descricao.isEmpty() || dataTexto.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Preencha todos os campos obrigatórios!", "Atenção", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try (Connection con = Conexao.connect()) {
+            java.sql.Date dataSql = converterData(dataTexto);
+            int idPrioridade = Integer.parseInt(cmbPrioridade.getSelectedItem().toString().split(" - ")[0]);
+            int idResponsavel = Integer.parseInt(cmbResponsavel.getSelectedItem().toString().split(" - ")[0]);
+
+            String sql = "INSERT INTO lista_tarefas (data_tarefa, descricao_tarefa, observacao, id_prioridade, id_responsavel) VALUES (?, ?, ?, ?, ?)";
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setDate(1, dataSql);
+            stmt.setString(2, descricao);
+            stmt.setString(3, observacao);
+            stmt.setInt(4, idPrioridade);
+            stmt.setInt(5, idResponsavel);
+
+            stmt.executeUpdate();
+            JOptionPane.showMessageDialog(this, "Tarefa salva com sucesso!");
+            limpar();
+
+        } catch (SQLException | ParseException e) {
+            JOptionPane.showMessageDialog(this, "Erro ao salvar: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // --- Pesquisar ---
+    private void pesquisar() {
+        if (txtId.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Informe o ID da tarefa!", "Atenção", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try (Connection con = Conexao.connect()) {
+            String sql = """
+                SELECT t.id, t.data_tarefa, t.descricao_tarefa, t.observacao,
+                       p.id AS id_prioridade, r.id AS id_responsavel
+                FROM lista_tarefas t
+                JOIN prioridade p ON p.id = t.id_prioridade
+                JOIN responsavel r ON r.id = t.id_responsavel
+                WHERE t.id = ?
+            """;
+
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setInt(1, Integer.parseInt(txtId.getText()));
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                txtDataTarefa.setText(new SimpleDateFormat("dd/MM/yyyy").format(rs.getDate("data_tarefa")));
+                txtDescricao.setText(rs.getString("descricao_tarefa"));
+                txtObservacao.setText(rs.getString("observacao"));
+                selecionarItemCombo(cmbPrioridade, rs.getInt("id_prioridade"));
+                selecionarItemCombo(cmbResponsavel, rs.getInt("id_responsavel"));
+            } else {
+                JOptionPane.showMessageDialog(this, "Tarefa não encontrada!");
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Erro ao pesquisar: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // --- Alterar ---
+    private void alterar() {
+        if (txtId.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Informe o ID da tarefa!", "Atenção", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try (Connection con = Conexao.connect()) {
+            java.sql.Date dataSql = converterData(txtDataTarefa.getText().trim());
+            int idPrioridade = Integer.parseInt(cmbPrioridade.getSelectedItem().toString().split(" - ")[0]);
+            int idResponsavel = Integer.parseInt(cmbResponsavel.getSelectedItem().toString().split(" - ")[0]);
+
+            String sql = "UPDATE lista_tarefas SET data_tarefa=?, descricao_tarefa=?, observacao=?, id_prioridade=?, id_responsavel=? WHERE id=?";
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setDate(1, dataSql);
+            stmt.setString(2, txtDescricao.getText().trim());
+            stmt.setString(3, txtObservacao.getText().trim());
+            stmt.setInt(4, idPrioridade);
+            stmt.setInt(5, idResponsavel);
+            stmt.setInt(6, Integer.parseInt(txtId.getText()));
+
+            int linhas = stmt.executeUpdate();
+            if (linhas > 0)
+                JOptionPane.showMessageDialog(this, "Tarefa alterada com sucesso!");
+            else
+                JOptionPane.showMessageDialog(this, "ID não encontrado!");
+
+        } catch (SQLException | ParseException e) {
+            JOptionPane.showMessageDialog(this, "Erro ao alterar: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // --- Excluir ---
+    private void excluir() {
+        if (txtId.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Informe o ID da tarefa!", "Atenção", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try (Connection con = Conexao.connect()) {
+            String sql = "DELETE FROM lista_tarefas WHERE id = ?";
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setInt(1, Integer.parseInt(txtId.getText()));
+
+            int linhas = stmt.executeUpdate();
+            if (linhas > 0)
+                JOptionPane.showMessageDialog(this, "Tarefa excluída com sucesso!");
+            else
+                JOptionPane.showMessageDialog(this, "ID não encontrado!");
+
+            limpar();
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Erro ao excluir: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // --- Limpar campos ---
+    private void limpar() {
+        txtId.setText("");
+        txtDataTarefa.setText("");
+        txtDescricao.setText("");
+        txtObservacao.setText("");
+        cmbPrioridade.setSelectedIndex(-1);
+        cmbResponsavel.setSelectedIndex(-1);
+    }
+
+    // --- Converter data para SQL ---
+    private java.sql.Date converterData(String dataTexto) throws ParseException {
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+        Date data = formato.parse(dataTexto);
+        return new java.sql.Date(data.getTime());
+    }
+
+    // --- Selecionar item no combo pelo ID ---
+    private void selecionarItemCombo(JComboBox<String> combo, int id) {
+        for (int i = 0; i < combo.getItemCount(); i++) {
+            if (combo.getItemAt(i).startsWith(String.valueOf(id) + " -")) {
+                combo.setSelectedIndex(i);
+                break;
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new FormCadastroListaTarefas().setVisible(true));
+   }
 }

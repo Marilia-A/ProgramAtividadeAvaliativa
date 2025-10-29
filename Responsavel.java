@@ -24,17 +24,4 @@ public class Responsavel {
         this.nome = nome;
     }
 
-    //metodos
-
-    //salvar: boolean
-    //alterar: boolean
-    //excluir: boolean
-    //pesquisar: boolean
-
-
-
-
-
-
-
 }

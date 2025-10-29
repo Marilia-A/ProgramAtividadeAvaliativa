@@ -40,14 +40,5 @@ public class ListaTarefas {
         this.descricao = descricao;
         this.observacao = observacao;
     }
-
-    //metodos
-
-    //salvar: boolean
-    //alterar: boolean
-    //excluir: boolean
-    //pesquisar: boolean
-    //buscarResponsavel: boolean
-    //buscarPrioridade: boolean
     
 }

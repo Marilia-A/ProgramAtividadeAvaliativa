@@ -1,74 +1,72 @@
 import java.awt.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
+import java.sql.*;
 import javax.swing.*;
-
 public class FormCadastroPrioridade extends JFrame {
-    private JTextField txtId, txtDescricao;
-    private JButton btnSalvar, btnAlterar, btnExcluir, btnPesquisar;
+    private JTextField txtId;
+    private JTextField txtDescricao;
+    private JButton btnSalvar;
+    private JButton btnAlterar;
+    private JButton btnExcluir;
+    private JButton btnPesquisar;
+    private JButton btnSair;
 
     public FormCadastroPrioridade(){
         setTitle("Cadastro de Prioridade");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(350,180);
+        setSize(400,250);
         setLocationRelativeTo(null);
-
-        iniciarComponentes();
         setVisible(true);
-    }
 
-    private void iniciarComponentes(){
-        JPanel painelPrincipal = new JPanel(new GridBagLayout());
+        setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        gbc.insets = new Insets(5,5,5,5);
-        gbc.anchor = GridBagConstraints.WEST;
-
+        //Campo ID
+        JLabel lblId = new JLabel("ID:");
         gbc.gridx = 0;
         gbc.gridy = 0;
-        painelPrincipal.add(new JLabel("ID:"), gbc);
-        gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0;
-        txtId = new JTextField(15);
-        painelPrincipal.add(txtId, gbc);
+        add(lblId, gbc);
+        txtId = new JTextField();
+        gbc.gridx = 1; 
+        gbc.gridy = 0;
+        add(txtId, gbc);
 
-        gbc.gridx = 0;
+        // Campo Descrição
+        JLabel lblDescricao = new JLabel("Descrição:");
+        gbc.gridx = 0; 
         gbc.gridy = 1;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.weightx = 0;
-        painelPrincipal.add(new JLabel("Descrição:"), gbc);
-        gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0;
-        txtDescricao = new JTextField(15);
-        painelPrincipal.add(txtDescricao, gbc);
+        add(lblDescricao, gbc);
+        txtDescricao = new JTextField();
+        gbc.gridx = 1; 
+        gbc.gridy = 1;
+        add(txtDescricao, gbc);
 
-        JPanel painelBotoes = new JPanel(new FlowLayout());
-
+        // Painel de Botões
+        JPanel painelBotoes = new JPanel();
         btnSalvar = new JButton("Salvar");
+        btnPesquisar = new JButton("Pesquisar");
         btnAlterar = new JButton("Alterar");
         btnExcluir = new JButton("Excluir");
-        btnPesquisar = new JButton("Pesquisar");
-
-        btnSalvar.addActionListener(e -> salvarPrioridade());
-        btnAlterar.addActionListener(e -> alterarPrioridade());
-        btnExcluir.addActionListener(e -> excluirPrioridade());
-        btnPesquisar.addActionListener(e -> pesquisarPrioridade());
+        btnSair = new JButton("Sair");
 
         painelBotoes.add(btnSalvar);
+        painelBotoes.add(btnPesquisar);
         painelBotoes.add(btnAlterar);
         painelBotoes.add(btnExcluir);
-        painelBotoes.add(btnPesquisar);
+        painelBotoes.add(btnSair);
 
-        gbc.gridx = 0;
-        gbc.gridy = 2;
         gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        painelPrincipal.add(painelBotoes, gbc);
-        add(painelPrincipal);
+        gbc.gridx = 0; 
+        gbc.gridy = 6;
+        add(painelBotoes, gbc);
+
+        btnSalvar.addActionListener(e -> salvarPrioridade());
+        btnPesquisar.addActionListener(e -> pesquisarPrioridade());
+        btnAlterar.addActionListener(e -> alterarPrioridade());
+        btnExcluir.addActionListener(e -> excluirPrioridade());
+        btnSair.addActionListener(e -> dispose());
+
     }
 
     private void salvarPrioridade() {

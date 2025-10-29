@@ -23,16 +23,5 @@ public class Prioridade {
         this.id = id;
         this.descricao = descricao;
     }
-    //metodos
-
-    //salvar: boolean
-    //alterar: boolean
-    //excluir: boolean
-    //pesquisar: boolean
-
-
-
-
-
 
 }
