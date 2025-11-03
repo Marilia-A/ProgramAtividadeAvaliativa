@@ -112,6 +112,7 @@ public class FormCadastroListaTarefas extends JFrame {
         painelBotoes.add(btnLimpar);
         painelBotoes.add(btnSair);
 
+        //config do painel de botões
         gbc.gridwidth = 2;
         gbc.gridx = 0; 
         gbc.gridy = 6;
@@ -119,6 +120,7 @@ public class FormCadastroListaTarefas extends JFrame {
         carregarComboPrioridades();
         carregarComboResponsaveis();
 
+        // ações dos botões
         btnSalvar.addActionListener(e -> salvar());
         btnPesquisar.addActionListener(e -> pesquisar());
         btnAlterar.addActionListener(e -> alterar());
@@ -131,7 +133,7 @@ public class FormCadastroListaTarefas extends JFrame {
     private void carregarComboPrioridades() {
         try (Connection con = Conexao.connect()) {
             cmbPrioridade.removeAllItems();
-            String sql = "SELECT id, descricao FROM prioridade ORDER BY id";
+            String sql = "SELECT id, descricao FROM prioridade ORDER BY id"; //consulta do sql para puxar as prioridades
             PreparedStatement stmt = con.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -146,7 +148,7 @@ public class FormCadastroListaTarefas extends JFrame {
     private void carregarComboResponsaveis() {
         try (Connection con = Conexao.connect()) {
             cmbResponsavel.removeAllItems();
-            String sql = "SELECT id, nome FROM responsavel ORDER BY id";
+            String sql = "SELECT id, nome FROM responsavel ORDER BY id"; //consulta do sql para puxar os responsáveis
             PreparedStatement stmt = con.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -172,7 +174,7 @@ public class FormCadastroListaTarefas extends JFrame {
             java.sql.Date dataSql = converterData(dataTexto);
             int idPrioridade = Integer.parseInt(cmbPrioridade.getSelectedItem().toString().split(" - ")[0]);
             int idResponsavel = Integer.parseInt(cmbResponsavel.getSelectedItem().toString().split(" - ")[0]);
-
+            // puxa os dados do combo e então começa a passar para o banco
             String sql = "INSERT INTO lista_tarefas (id, data_tarefa, descricao_tarefa, observacao, id_prioridade, id_responsavel) VALUES (?, ?, ?, ?, ?, ?)";
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setInt(1, Integer.parseInt(txtId.getText()));
@@ -181,7 +183,7 @@ public class FormCadastroListaTarefas extends JFrame {
             stmt.setString(4, observacao);
             stmt.setInt(5, idPrioridade);
             stmt.setInt(6, idResponsavel);
-
+            //executa o insert no banco
             stmt.executeUpdate();
             JOptionPane.showMessageDialog(this, "Tarefa salva com sucesso!");
             limpar();
@@ -191,7 +193,7 @@ public class FormCadastroListaTarefas extends JFrame {
         }
     }
 
-    // --- Pesquisar ---
+    // metodo Pesquisar 
     private void pesquisar() {
         if (txtId.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Informe o ID da tarefa!", "Atenção", JOptionPane.WARNING_MESSAGE);
