@@ -159,7 +159,7 @@ public class FormCadastroListaTarefas extends JFrame {
         }
     }
 
-        // --- Salvar ---
+        // metodo Salvar 
     private void salvar() {
         String dataTexto = txtDataTarefa.getText().trim();
         String descricao = txtDescricao.getText().trim();
@@ -229,7 +229,7 @@ public class FormCadastroListaTarefas extends JFrame {
         }
     }
 
-    // --- Alterar ---
+    // metodo Alterar
     private void alterar() {
         if (txtId.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Informe o ID da tarefa!", "Atenção", JOptionPane.WARNING_MESSAGE);
@@ -240,7 +240,7 @@ public class FormCadastroListaTarefas extends JFrame {
             java.sql.Date dataSql = converterData(txtDataTarefa.getText().trim());
             int idPrioridade = Integer.parseInt(cmbPrioridade.getSelectedItem().toString().split(" - ")[0]);
             int idResponsavel = Integer.parseInt(cmbResponsavel.getSelectedItem().toString().split(" - ")[0]);
-
+            //utiliza o id para achar a tarefa para ser alterada e puxa tambem os dados de combo
             String sql = "UPDATE lista_tarefas SET data_tarefa=?, descricao_tarefa=?, observacao=?, id_prioridade=?, id_responsavel=? WHERE id=?";
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setDate(1, dataSql);
@@ -261,13 +261,13 @@ public class FormCadastroListaTarefas extends JFrame {
         }
     }
 
-    // --- Excluir ---
+    //  metodo Excluir
     private void excluir() {
         if (txtId.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Informe o ID da tarefa!", "Atenção", JOptionPane.WARNING_MESSAGE);
             return;
         }
-
+        // exclui a tarefa pelo id
         try (Connection con = Conexao.connect()) {
             String sql = "DELETE FROM lista_tarefas WHERE id = ?";
             PreparedStatement stmt = con.prepareStatement(sql);
@@ -286,7 +286,7 @@ public class FormCadastroListaTarefas extends JFrame {
         }
     }
 
-    // --- Limpar campos ---
+    // metodo limpar
     private void limpar() {
         txtId.setText("");
         txtDataTarefa.setText("");
@@ -296,14 +296,14 @@ public class FormCadastroListaTarefas extends JFrame {
         cmbResponsavel.setSelectedIndex(-1);
     }
 
-    // --- Converter data para SQL ---
+    // converter data
     private java.sql.Date converterData(String dataTexto) throws ParseException {
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         Date data = formato.parse(dataTexto);
         return new java.sql.Date(data.getTime());
     }
 
-    // --- Selecionar item no combo pelo ID ---
+    // seleciona item do combo pelo id
     private void selecionarItemCombo(JComboBox<String> combo, int id) {
         for (int i = 0; i < combo.getItemCount(); i++) {
             if (combo.getItemAt(i).startsWith(String.valueOf(id) + " -")) {
